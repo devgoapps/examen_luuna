@@ -1,0 +1,168 @@
+<div class="container">
+	<div class="fluid-container">
+		<button (click)="logout()" class="btn btn-danger">Salir</button>
+		<h2>{{ userName }} <small>({{ userRole }})</small>.</h2>
+	</div>
+	<div class="row" *ngIf="userRole != 'customer'">
+		<h3>Users</h3>
+		<hr>
+		<div class="col-md-5 col-sm-5" [ngClass]="{'disabled': userRole != 'admin'}">
+			<form #form="ngForm" (ngSubmit)="form.valid ? !isUpdateUser ? createUser() : updateUser(): ''" novalidate id="form1">
+				<button (click)="newUser()" type="button" class="btn btn-default">Nuevo</button>
+				<div class="form-group">
+					<label>User Id:</label>
+					<input [(ngModel)]="user.user_id" type="text" name="id" disabled class="form-control" >
+				</div>
+				<div class="form-group">
+					<label>Nickname:</label>
+					<input [(ngModel)]="user.nickname" type="text" name="nickname" required class="form-control" #nickname="ngModel">
+				</div>
+				<div *ngIf="nickname.errors && form.submitted" >
+					<div [hidden]="!nickname.errors.required" >
+						<label style="color: red;">El nickname es requerido.</label>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label>Email:</label>
+					<input [(ngModel)]="user.email" type="text" name="email" required [pattern]="emailPattern" class="form-control" #email="ngModel">
+				</div>
+				<div *ngIf="email.errors && form.submitted" >
+					<div [hidden]="!email.errors.required" >
+						<label style="color: red;">El correo electrónico es requerido.</label>
+					</div>
+					<div [hidden]="!email.errors.pattern" >
+						<label style="color: red;">El formato del correo electrónico no es válido.</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Password:</label>
+					<input [(ngModel)]="user.password" type="password" name="password" required class="form-control" #password="ngModel">
+				</div>
+				<div *ngIf="password.errors && form.submitted" >
+					<div [hidden]="!password.errors.required" >
+						<label style="color: red;">El password es requerido.</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Role:</label>
+					<select [(ngModel)]="user.role" name="role" required class="form-control" #role="ngModel">
+						<option [ngValue]="'admin'">Admin</option>
+						<option [ngValue]="'staff'">Staff</option>
+						<option [ngValue]="'customer'">Customer</option>
+					</select>
+				</div>
+				<div *ngIf="role.errors && form.submitted" >
+					<div [hidden]="!role.errors.required" >
+						<label style="color: red;">El role es requerido.</label>
+					</div>
+				</div>
+				
+
+				<button *ngIf="!isUpdateUser" type="submit" class="btn btn-default">Crear usuario</button>
+
+				<button *ngIf="isUpdateUser" type="submit" class="btn btn-default">Actualizar usuario</button>
+			</form>
+		</div>
+		<div class="col-md-7 col-sm-7">
+			<table class="table table-hover">
+			    <thead>
+			      <tr>
+			        <th>#</th>
+			        <th>Nickname</th>
+			        <th>Email</th>
+			        <th>Role</th>
+			        <th>Actions</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr *ngFor="let user of users" (click)="setUser(user)">
+			        <td>{{ user.user_id }}</td>
+			        <td>{{ user.nickname }}</td>
+			        <td>{{ user.email }}</td>
+			        <td>{{ user.role }}</td>
+			        <td [ngClass]="{'disabled': userRole != 'admin'}">
+			        	<button (click)="deleteUser(user.user_id)" class="btn btn-danger">Eliminar</button>
+			        </td>
+			      </tr>
+			    </tbody>
+		  	</table>
+		</div>
+	</div>
+	<div class="row" >
+		<h3>Address</h3>
+		<hr>
+		<div class="col-md-5 col-sm-5" [ngClass]="{'disabled': userRole == 'customer'}">
+			<form #form2="ngForm" (ngSubmit)="form2.valid ? !isUpdateAddress ? createAddress() : updateAddress(): ''" novalidate id="form2">
+				<button (click)="newAddress()" type="button" class="btn btn-default">Nuevo</button>
+				<div class="form-group">
+					<label>Address Id:</label>
+					<input [(ngModel)]="address.address_id" type="text" name="address_id" disabled class="form-control" >
+				</div>
+
+				<div class="form-group">
+					<label>State:</label>
+					<input [(ngModel)]="address.state" type="text" name="state" required class="form-control" #state="ngModel">
+				</div>
+				<div *ngIf="state.errors && form2.submitted" >
+					<div [hidden]="!state.errors.required" >
+						<label style="color: red;">El estado es requerido.</label>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label>City:</label>
+					<input [(ngModel)]="address.city" type="text" name="city" required class="form-control" #city="ngModel">
+				</div>
+				<div *ngIf="city.errors && form2.submitted" >
+					<div [hidden]="!city.errors.required" >
+						<label style="color: red;">La cuidad es requerida.</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Street:</label>
+					<input [(ngModel)]="address.street" type="text" name="street" required class="form-control" #street="ngModel">
+				</div>
+				<div *ngIf="street.errors && form2.submitted" >
+					<div [hidden]="!street.errors.required" >
+						<label style="color: red;">La calle es requerida.</label>
+					</div>
+				</div>
+
+				<button *ngIf="!isUpdateAddress" type="submit" class="btn btn-default">Crear dirección</button>
+
+				<button *ngIf="isUpdateAddress" type="submit" class="btn btn-default">Actualizar dirección</button>
+			</form>
+		</div>
+		<div class="col-md-7 col-sm-7">
+			<table class="table table-hover" >
+			    <thead>
+			      <tr>
+			        <th>#</th>
+			        <th>State</th>
+			        <th>City</th>
+			        <th>Street</th>
+			        <th>Actions</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr *ngFor="let address of addresses" (click)="setAddress(address)">
+			        <td>{{ address.address_id }}</td>
+			        <td>{{ address.state }}</td>
+			        <td>{{ address.city }}</td>
+			        <td>{{ address.street }}</td>
+			        <td [ngClass]="{'disabled': userRole != 'admin'}">
+			        	<button (click)="deleteAddress(address.address_id)" class="btn btn-danger">Eliminar</button>
+			        </td>
+			      </tr>
+			    </tbody>
+		  	</table>
+		</div>
+	</div>
+	<hr>
+</div>
